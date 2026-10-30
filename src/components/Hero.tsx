@@ -1,4 +1,4 @@
-import { site } from "@/config/site";
+import { primaryInquiry, site } from "@/config/site";
 import { CtaLink } from "./CtaLink";
 import { HeroMedia } from "./HeroMedia";
 
@@ -38,7 +38,7 @@ export function Hero() {
         <div className="mt-7 lg:col-span-5 lg:col-start-1 lg:row-start-3 lg:mt-0 lg:self-end">
           <p className="max-w-[26ch] text-lg leading-snug text-ivory/85 md:text-xl">{hero.supporting}</p>
           <div className="mt-7 flex flex-col gap-3 xs:flex-row xs:flex-wrap">
-            <CtaLink href={site.bookingUrl} external variant="ivory">
+            <CtaLink href={primaryInquiry.href} external={primaryInquiry.external} variant="ivory">
               {hero.primaryCta}
             </CtaLink>
             <CtaLink href="#work" variant="outline">

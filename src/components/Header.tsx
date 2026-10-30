@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { site } from "@/config/site";
+import { primaryInquiry, site } from "@/config/site";
 import { CtaLink } from "./CtaLink";
 
 export function Header() {
@@ -85,7 +85,7 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <span className="hidden sm:block">
-            <CtaLink href={site.bookingUrl} external variant="outline" className="min-h-11!">
+            <CtaLink href={primaryInquiry.href} external={primaryInquiry.external} variant="outline" className="min-h-11!">
               {site.hero.primaryCta}
             </CtaLink>
           </span>
@@ -137,8 +137,8 @@ export function Header() {
               </li>
             ))}
           </ul>
-          <div className="mt-10 flex flex-col gap-5">
-            <CtaLink href={site.bookingUrl} external variant="ivory" className="w-full">
+          <div className="mt-10 flex flex-col gap-5" onClickCapture={() => close(false)}>
+            <CtaLink href={primaryInquiry.href} external={primaryInquiry.external} variant="ivory" className="w-full">
               {site.hero.primaryCta}
             </CtaLink>
             <p className="label text-gray">

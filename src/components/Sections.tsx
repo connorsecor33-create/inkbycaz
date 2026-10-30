@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { portfolio } from "@/config/portfolio";
-import { site } from "@/config/site";
+import { primaryInquiry, site } from "@/config/site";
 import { CtaLink } from "./CtaLink";
 import { Gallery } from "./Gallery";
+import { InquiryForm } from "./InquiryForm";
 
 function SectionLabel({ n, children, light = false }: { n: string; children: string; light?: boolean }) {
   return (
@@ -137,6 +138,17 @@ export function Inquire() {
         ))}
       </ol>
 
+      {inquire.form.endpoint ? (
+        <div className="mt-14 grid gap-12 md:mt-20 lg:grid-cols-12 lg:gap-x-6">
+          <div className="lg:col-span-4">
+            <p className="max-w-[36ch] text-lg leading-relaxed text-ivory/90 md:text-xl">{inquire.supportingWithForm}</p>
+            <p className="mt-6 max-w-[40ch] text-sm leading-relaxed text-gray">{inquire.note}</p>
+          </div>
+          <div className="lg:col-span-7 lg:col-start-6">
+            <InquiryForm config={inquire.form} instagramUrl={site.instagram.url} />
+          </div>
+        </div>
+      ) : (
       <div className="mt-14 grid gap-8 border-t rule-dark pt-10 md:mt-20 lg:grid-cols-12 lg:gap-x-6">
         <p className="max-w-[44ch] text-lg leading-relaxed text-ivory/90 md:text-xl lg:col-span-6">{inquire.supporting}</p>
         <div className="flex flex-col items-start gap-4 lg:col-span-5 lg:col-start-8 lg:items-end lg:text-right">
@@ -146,6 +158,7 @@ export function Inquire() {
           <p className="max-w-[40ch] text-sm leading-relaxed text-gray">{inquire.note}</p>
         </div>
       </div>
+      )}
     </section>
   );
 }
@@ -165,7 +178,7 @@ export function FinalCta() {
           <p className="label text-gray-ink">
             {site.location} — {site.instagram.handle}
           </p>
-          <CtaLink href={site.bookingUrl} external variant="oxblood">
+          <CtaLink href={primaryInquiry.href} external={primaryInquiry.external} variant="oxblood">
             {finalCta.cta}
           </CtaLink>
         </div>

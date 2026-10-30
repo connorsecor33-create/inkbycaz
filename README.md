@@ -32,6 +32,11 @@ Node 20+ is recommended (built and tested on Node 22).
 It currently points to `https://www.instagram.com/ink.by.caz/`. Replace it with a verified
 booking platform URL later and every button follows.
 
+**Inquiry form (Formspree).** The Inquire section has a built-in form that stays hidden until
+you set `NEXT_PUBLIC_FORMSPREE_FORM_ID` (see "Connecting Formspree" below). Until then every
+inquiry button opens Instagram. Once it's set, the "Start an Inquiry" buttons scroll to the form
+and Instagram remains as a secondary option.
+
 **Pending business details.** `site.businessDetails` holds fields that are not confirmed yet
 (display name, studio, address, hours, email, phone, booking policy). They are all `null`
 and nothing renders them. Add the content and wire it into a component once confirmed.
@@ -51,6 +56,30 @@ and nothing renders them. Add the content and wire it into a component once conf
   to `src/config/portfolio.ts` with `src: "/images/<file-name-without-extension>"`.
 - `next/image` uses a static loader (`src/lib/image-loader.ts`) that serves those files,
   so no runtime image service is needed.
+
+## Connecting Formspree
+
+1. In Formspree, create a form and copy its ID: the part after `/f/` in the endpoint,
+   e.g. `https://formspree.io/f/xyzabcd` → `xyzabcd`.
+2. Add it as an environment variable:
+   - locally: create `.env.local` with `NEXT_PUBLIC_FORMSPREE_FORM_ID=xyzabcd`
+   - on Vercel: Project → Settings → Environment Variables, then redeploy
+3. Submit one test inquiry and confirm it reaches the Formspree inbox and notification email.
+   (The first submission may ask you to confirm the form by email.)
+
+What the form sends: `name`, `email`, `instagram`, `placement`, `size`, `idea`, `references`,
+plus `_subject` (email subject line). `_gotcha` is a hidden honeypot that Formspree uses to drop
+bot submissions; the form also refuses to send when it's filled in.
+
+Behaviour: client-side validation with inline errors (focus moves to the first problem),
+the button disables and reads "Sending…" during submission so it can't be sent twice,
+Formspree's own error messages are shown if it rejects a submission, and the success message
+states clearly that it isn't a booking confirmation. For extra spam protection, turn on
+reCAPTCHA or Formspree's spam filtering in the form's settings; no code change is needed.
+
+Image uploads aren't included because Formspree only accepts files on paid plans. The form asks
+for reference links and points people to Instagram for images. Field labels and copy live in
+`src/components/InquiryForm.tsx` (fields) and `site.inquire.form` (copy).
 
 ## Hero video (later)
 

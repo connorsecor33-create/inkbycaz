@@ -8,6 +8,7 @@
   --color-gray-ink: #5f5c56; /* gray for small text on ivory (AA) */
   --color-oxblood: #702d32;
   --color-oxblood-deep: #5a2328;
+  --color-oxblood-light: #e0a4a8; /* error text on ink (AA) */
 
   --font-sans: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
 

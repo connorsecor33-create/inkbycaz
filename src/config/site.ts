@@ -27,6 +27,26 @@ export type HeroMedia =
       poster: ImageAsset;
     };
 
+export type InquiryFormConfig = {
+  /**
+   * Formspree endpoint, built from NEXT_PUBLIC_FORMSPREE_FORM_ID.
+   * While it's null the form is not rendered and the section falls back
+   * to the Instagram button, so the page never shows a form that can't send.
+   */
+  endpoint: string | null;
+  subject: string;
+  heading: string;
+  intro: string;
+  submit: string;
+  submitting: string;
+  successHeading: string;
+  successBody: string;
+  errorBody: string;
+  instagramAlternative: string;
+};
+
+const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID?.trim();
+
 export type SiteConfig = {
   brand: string;
   location: string;
@@ -68,8 +88,11 @@ export type SiteConfig = {
     heading: string;
     steps: { title: string; body: string }[];
     supporting: string;
+    /** Used instead of `supporting` when the form is switched on. */
+    supportingWithForm: string;
     note: string;
     cta: string;
+    form: InquiryFormConfig;
   };
   finalCta: { lines: [string, string]; cta: string };
   footer: { showAgencyCredit: boolean; agencyName: string; agencyUrl: string };
@@ -161,8 +184,23 @@ export const site: SiteConfig = {
     ],
     supporting:
       "Send your idea, placement, approximate size, and reference images on Instagram to start the conversation.",
+    supportingWithForm:
+      "Send your idea, placement, approximate size, and any references with the form, or message on Instagram if you prefer.",
     note: "A message opens the conversation. Details and scheduling are worked out directly with the artist.",
     cta: "Message @ink.by.caz",
+    form: {
+      endpoint: formspreeId ? `https://formspree.io/f/${formspreeId}` : null,
+      subject: "New tattoo inquiry — Inkbycaz",
+      heading: "Send an inquiry",
+      intro: "Share the details of your piece. Fields marked * are required.",
+      submit: "Send inquiry",
+      submitting: "Sending…",
+      successHeading: "Inquiry sent.",
+      successBody:
+        "Thanks for sharing your idea. This isn’t a booking confirmation — the artist will reply directly to talk through the details.",
+      errorBody: "Your inquiry didn’t send. Check your connection and try again, or message on Instagram instead.",
+      instagramAlternative: "Prefer Instagram? Message @ink.by.caz",
+    },
   },
 
   finalCta: {
@@ -186,3 +224,11 @@ export const site: SiteConfig = {
     bookingPolicy: null,
   },
 };
+
+/**
+ * Where "Start an Inquiry" buttons go: the on-page form when Formspree is
+ * configured, otherwise the booking URL (Instagram) in a new tab.
+ */
+export const primaryInquiry = site.inquire.form.endpoint
+  ? { href: "#inquire", external: false }
+  : { href: site.bookingUrl, external: true };
