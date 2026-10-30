@@ -1,26 +1,205 @@
 @import "tailwindcss";
 
+@theme {
+  --color-ink: #111110;
+  --color-ink-raised: #1a1a18;
+  --color-ivory: #f1ede4;
+  --color-gray: #a29f98;
+  --color-gray-ink: #5f5c56; /* gray for small text on ivory (AA) */
+  --color-oxblood: #702d32;
+  --color-oxblood-deep: #5a2328;
+
+  --font-sans: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+
+  --ease-editorial: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  --breakpoint-xs: 26rem;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --header-h: 4rem;
+  --gutter: 1.25rem;
+  --hairline-dark: color-mix(in srgb, var(--color-ivory) 16%, transparent);
+  --hairline-light: color-mix(in srgb, var(--color-ink) 18%, transparent);
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@media (min-width: 48rem) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --gutter: 2rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --header-h: 4.75rem;
+    --gutter: 2.5rem;
+  }
+}
+
+html {
+  scroll-padding-top: calc(var(--header-h) + 1rem);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ink);
+  color: var(--color-ivory);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-oxblood);
+  color: var(--color-ivory);
+}
+
+/* ---------- Type ---------- */
+
+@utility font-display {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-variation-settings: "wdth" 62;
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
+}
+
+@utility font-condensed {
+  font-variation-settings: "wdth" 72;
+}
+
+@utility label {
+  font-size: 0.6875rem;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* ---------- Layout helpers ---------- */
+
+@utility shell {
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@utility rule-dark {
+  border-color: var(--hairline-dark);
+}
+
+@utility rule-light {
+  border-color: var(--hairline-light);
+}
+
+/* ---------- Focus ---------- */
+
+:focus-visible {
+  outline: 2px solid var(--color-ivory);
+  outline-offset: 3px;
+}
+
+.on-light :focus-visible {
+  outline-color: var(--color-ink);
+}
+
+/* ---------- Motion (progressive) ----------
+   Content is visible by default. The inline script in layout.tsx adds
+   `.motion` only when the visitor has not asked for reduced motion and
+   IntersectionObserver exists; it removes it again if the observer never
+   starts, so nothing can stay hidden. */
+
+html.motion .reveal {
+  opacity: 0;
+  transform: translate3d(0, 1rem, 0);
+  transition:
+    opacity 0.8s var(--ease-editorial),
+    transform 0.8s var(--ease-editorial);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+html.motion .reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes line-up {
+  from {
+    transform: translate3d(0, 105%, 0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.headline-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.04em;
+  margin-bottom: -0.04em;
+}
+
+.headline-line > span {
+  display: block;
+}
+
+html.motion .headline-line > span {
+  animation: line-up 1s var(--ease-editorial) both;
+  animation-delay: var(--line-delay, 0ms);
+}
+
+html.motion .hero-media {
+  animation: fade-in 1.2s var(--ease-editorial) 0.15s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Lightbox ---------- */
+
+dialog.lightbox {
+  max-width: none;
+  max-height: none;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--color-ink);
+  color: var(--color-ivory);
+}
+
+dialog.lightbox::backdrop {
+  background: var(--color-ink);
+}
+
+html.motion dialog.lightbox[open] {
+  animation: fade-in 0.25s ease-out both;
 }

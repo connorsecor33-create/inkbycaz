@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "preview:build": "node scripts/build-preview.mjs",
+    "images": "python3 scripts/optimize-images.py",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "next": "16.4.3",
@@ -14,6 +17,7 @@
     "react-dom": "19.3.0"
   },
   "devDependencies": {
+    "@fontsource-variable/archivo": "^5.3.0",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
