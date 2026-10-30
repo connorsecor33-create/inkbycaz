@@ -45,7 +45,18 @@ export type InquiryFormConfig = {
   instagramAlternative: string;
 };
 
-const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID?.trim();
+/**
+ * Accepts the bare form ID ("xyzabcd") or a pasted endpoint
+ * ("https://formspree.io/f/xyzabcd"), ignoring quotes and whitespace.
+ */
+function parseFormspreeId(raw: string | undefined) {
+  if (!raw) return null;
+  const cleaned = raw.trim().replace(/^["']|["']$/g, "").trim();
+  const id = cleaned.match(/\/f\/([A-Za-z0-9]+)/)?.[1] ?? cleaned;
+  return /^[A-Za-z0-9]+$/.test(id) ? id : null;
+}
+
+const formspreeId = parseFormspreeId(process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID);
 
 export type SiteConfig = {
   brand: string;

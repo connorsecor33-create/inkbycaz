@@ -86,12 +86,20 @@ export function InquiryForm({ config, instagramUrl }: { config: InquiryFormConfi
         setStatus("success");
         requestAnimationFrame(() => successRef.current?.focus());
       } else {
-        const body = (await res.json().catch(() => null)) as { errors?: { message?: string }[] } | null;
-        setServerMessage(body?.errors?.map((x) => x.message).filter(Boolean).join(" ") || null);
+        // Formspree replies with `errors: [{ message }]` and/or `error: "..."`.
+        const body = (await res.json().catch(() => null)) as {
+          error?: string;
+          errors?: { message?: string }[];
+        } | null;
+        const detail = body?.errors?.map((x) => x.message).filter(Boolean).join(" ") || body?.error || "";
+        setServerMessage(`Formspree responded: ${detail || `HTTP ${res.status}`}.`);
+        console.error("[InquiryForm] Formspree rejected the submission", res.status, body);
         setStatus("error");
         requestAnimationFrame(() => errorRef.current?.focus());
       }
-    } catch {
+    } catch (err) {
+      console.error("[InquiryForm] Request to Formspree failed", err);
+      setServerMessage(null);
       setStatus("error");
       requestAnimationFrame(() => errorRef.current?.focus());
     } finally {
